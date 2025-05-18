@@ -128,7 +128,7 @@
     }
 
     .table td {
-        color: #f5f5f5 !important;
+        color: #7a6b6b !important;
         border-color: #D4AF37 !important;
     }
 
