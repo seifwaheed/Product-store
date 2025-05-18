@@ -13,7 +13,7 @@
         <div class="form-group">
           @foreach($errors->all() as $error)
             <div class="alert alert-danger">
-              <strong>Error!</strong> {{$error}}
+              <strong>Error!</strong> {!! $error !!}
             </div>
           @endforeach
         </div>

@@ -73,7 +73,8 @@ Route::get('/test', function () {
 });
 
 
-
+Route::get('/email/resend', [App\Http\Controllers\Web\UsersController::class, 'resendVerification'])
+    ->name('resend.verification');
 
 
 

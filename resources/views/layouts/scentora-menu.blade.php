@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg" style="background-color: var(--light-bg);">
+<nav class="navbar navbar-expand-lg" style="background-color: #2c1e1e;">
   <div class="container-fluid">
     <a class="navbar-brand fw-bold fs-3" href="{{ route('home') }}">
       <i class="fas fa-spray-can me-2 text-success"></i><span class="text-primary">Scentora</span>
@@ -23,6 +23,13 @@
             <i class="fas fa-spray-can me-1"></i>Fragrances
           </a>
         </li>
+        @role('Admin')
+        <li class="nav-item">
+          <a class="nav-link" href="{{ route('users') }}">
+            <i class="fas fa-users me-1"></i>Users
+          </a>
+        </li>
+        @endrole
       </ul>
       <ul class="navbar-nav">
         @guest
@@ -70,51 +77,49 @@
 </nav>
 
 <style>
-  .btn-gold {
-    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-    color: #fff;
-    border: none;
-    transition: all 0.3s ease;
-    border-radius: 25px;
-    padding: 8px 16px;
-  }
-
-  .btn-gold:hover {
-    background: var(--primary-color);
-    color: white;
-    transform: scale(1.05);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  }
-
-  .navbar-brand {
-    font-family: 'Poppins', sans-serif;
-    letter-spacing: 1px;
-    color: var(--primary-color) !important;
+  .navbar {
+    background-color: #2c1e1e !important;
   }
 
   .nav-link {
+    color: #f5f5f5 !important;
     font-weight: 500;
-    color: var(--text-color) !important;
     transition: color 0.3s ease, transform 0.3s ease;
   }
 
   .nav-link:hover {
-    color: var(--primary-color) !important;
+    color: #D4AF37 !important;
     transform: translateY(-2px);
   }
 
+  .navbar-brand {
+    color: #D4AF37 !important;
+  }
+
   .dropdown-menu {
-    border-radius: 10px;
-    box-shadow: 0px 8px 20px rgba(0,0,0,0.1);
+    background-color: #2c1e1e;
+    border: 1px solid #D4AF37;
   }
 
   .dropdown-item {
-    color: var(--text-color);
-    transition: background-color 0.3s ease;
+    color: #f5f5f5;
   }
 
   .dropdown-item:hover {
-    background-color: var(--primary-color);
-    color: white;
+    background-color: #D4AF37;
+    color: #2c1e1e;
+  }
+
+  .btn-gold {
+    background-color: #D4AF37;
+    color: #2c1e1e;
+    border: none;
+    transition: all 0.3s ease;
+  }
+
+  .btn-gold:hover {
+    background-color: #B38F28;
+    color: #2c1e1e;
+    transform: scale(1.05);
   }
 </style>

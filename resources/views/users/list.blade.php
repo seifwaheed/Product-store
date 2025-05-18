@@ -7,12 +7,12 @@
 <div class="container py-4">
     <div class="row mb-4">
         <div class="col-md-6">
-            <h2 class="text-primary"><i class="fas fa-users me-2"></i>Users List</h2>
+            <h2 class="text-gold"><i class="fas fa-users me-2"></i>Users List</h2>
         </div>
         <div class="col-md-6 text-end">
             <form action="{{ route('users') }}" method="GET" class="d-flex gap-2">
                 <input type="text" name="keywords" class="form-control" placeholder="Search users..." value="{{ request()->keywords }}">
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-gold">
                     <i class="fas fa-search"></i>
                 </button>
             </form>
@@ -36,21 +36,21 @@
                     <td>{{ $user->email }}</td>
                     <td>
                         @foreach($user->roles as $role)
-                        <span class="badge bg-primary">{{ $role->name }}</span>
+                        <span class="badge bg-gold">{{ $role->name }}</span>
                         @endforeach
                     </td>
                     <td>
                         <div class="btn-group">
-                            <a href="{{ route('profile', $user->id) }}" class="btn btn-sm btn-info me-2">
+                            <a href="{{ route('profile', $user->id) }}" class="btn btn-gold btn-sm me-2">
                                 <i class="fas fa-eye"></i> View
                             </a>
                             @can('edit_users')
-                            <a href="{{ route('users_edit', $user->id) }}" class="btn btn-sm btn-warning me-2">
+                            <a href="{{ route('users_edit', $user->id) }}" class="btn btn-gold btn-sm me-2">
                                 <i class="fas fa-edit"></i> Edit
                             </a>
                             @endcan
                             @can('delete_users')
-                            <a href="{{ route('users_delete', $user->id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
+                            <a href="{{ route('users_delete', $user->id) }}" class="btn btn-gold btn-sm" onclick="return confirm('Are you sure?')">
                                 <i class="fas fa-trash"></i> Delete
                             </a>
                             @endcan
@@ -64,52 +64,125 @@
 </div>
 
 <style>
+    /* Navigation Bar Styling */
+    .navbar {
+        background-color: #2c1e1e !important;
+    }
+
+    .nav-link {
+        color: #f5f5f5 !important;
+        font-weight: 500;
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    .nav-link:hover {
+        color: #D4AF37 !important;
+        transform: translateY(-2px);
+    }
+
+    .navbar-brand {
+        color: #D4AF37 !important;
+    }
+
+    .dropdown-menu {
+        background-color: #2c1e1e;
+        border: 1px solid #D4AF37;
+    }
+
+    .dropdown-item {
+        color: #f5f5f5;
+    }
+
+    .dropdown-item:hover {
+        background-color: #D4AF37;
+        color: #2c1e1e;
+    }
+
+    /* Page Styling */
+    body {
+        background-color: #2c1e1e;
+        color: #f5f5f5;
+    }
+
+    /* Table Styling */
     .table {
-        background-color: var(--card-bg);
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: var(--card-shadow);
+        background-color: #7a6b6b !important;
+        color: #f5f5f5 !important;
+        border-color: #D4AF37 !important;
     }
 
     .table thead th {
-        background-color: var(--dark-bg);
-        color: var(--text-color);
-        border-bottom: 2px solid var(--border-color);
+        background-color: #7a6b6b !important;
+        color: #f5f5f5 !important;
+        border-color: #D4AF37 !important;
+        font-weight: 600;
     }
 
     .table tbody tr {
-        border-bottom: 1px solid var(--border-color);
-        color: var(--text-color);
+        background-color: #7a6b6b !important;
+        border-color: #D4AF37 !important;
     }
 
     .table tbody tr:hover {
-        background-color: var(--dropdown-hover-bg);
+        background-color: #8a7b7b !important;
     }
 
-    .badge {
-        transition: background-color 0.3s ease;
+    .table td {
+        color: #f5f5f5 !important;
+        border-color: #D4AF37 !important;
     }
 
+    /* Form Controls */
     .form-control {
-        background-color: var(--card-bg);
-        border-color: var(--border-color);
-        color: var(--text-color);
+        background-color: #3a2a2a;
+        border-color: #D4AF37;
+        color: #f5f5f5;
     }
 
     .form-control:focus {
-        background-color: var(--card-bg);
-        border-color: var(--primary-color);
-        color: var(--text-color);
-        box-shadow: 0 0 0 0.25rem rgba(var(--primary-color), 0.25);
+        background-color: #3a2a2a;
+        border-color: #D4AF37;
+        color: #f5f5f5;
+        box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
     }
 
-    .btn-group .btn {
-        border-radius: 6px;
+    /* Button Styling */
+    .btn-gold {
+        background-color: #D4AF37;
+        color: #2c1e1e;
+        border: none;
         transition: all 0.3s ease;
     }
 
-    .text-primary {
-        color: var(--primary-color) !important;
+    .btn-gold:hover {
+        background-color: #B38F28;
+        color: #2c1e1e;
+        transform: scale(1.05);
+    }
+
+    .badge.bg-gold {
+        background-color: #D4AF37;
+        color: #2c1e1e;
+        font-weight: 500;
+        padding: 6px 12px;
+    }
+
+    .text-gold {
+        color: #D4AF37;
+        font-weight: 600;
+    }
+
+    /* Container and Layout */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .table-responsive {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 </style>
 

@@ -50,7 +50,7 @@ class UsersController extends Controller {
     		$this->validate($request, [
 	        'name' => ['required', 'string', 'min:5'],
 	        'email' => ['required', 'email', 'unique:users'],
-	        'password' => ['required', 'confirmed', Password::min(8)->numbers()->letters()->mixedCase()->symbols()],
+	        'password' => ['required'],//, 'confirmed', Password::min(8)->numbers()->letters()->mixedCase()->symbols()
 	    	]);
     	}
     	catch(\Exception $e) {
@@ -70,15 +70,23 @@ class UsersController extends Controller {
         $title = "Verification Link";
         $token = Crypt::encryptString(json_encode(['id' => $user->id, 'email' => $user->email]));
         $link = route("verify", ['token' => $token]);
-        Mail::to($user->email)->send(new VerificationEmail($link, $user->name));
-       
-        // Clear any existing session before logging in
-        Auth::logout();
-        
-        // Log in the new user
-        Auth::login($user);
-
+        try {
+            \Log::info('Attempting to send verification email to: ' . $user->email);
+            Mail::to($user->email)->send(new VerificationEmail($link, $user->name));
+            \Log::info('Successfully sent verification email');
+        } catch (\Exception $e) {
+            \Log::error('Failed to send verification email: ' . $e->getMessage());
+            return redirect('/')->with('message', 'Registration complete. If you did not receive an email, please check your spam folder or contact support.');
+        }
         return redirect('/');
+       
+        // // Clear any existing session before logging in
+        // Auth::logout();
+        
+        // // Log in the new user
+        // Auth::login($user);
+
+        // return redirect('/');
     }
 
     public function login(Request $request) {
@@ -91,8 +99,13 @@ class UsersController extends Controller {
             return redirect()->back()->withInput($request->input())->withErrors('Invalid login information.');
 
             $user = User::where('email', $request->email)->first();
-            if(!$user->email_verified_at)
-                return redirect()->back()->withInput($request->input())->withErrors('Your email is not verified');
+            if(!$user->email_verified_at) {
+            Auth::logout();
+            $encodedEmail = $request->email;
+            return redirect()->back()
+                ->withInput(['email' => $request->email])
+                ->withErrors('Your email is not verified. <a href="' . route('resend.verification', ['email' => $encodedEmail]) . '">Click here to resend verification email</a>');
+        }
 
         return redirect('/');
     }
@@ -112,6 +125,42 @@ class UsersController extends Controller {
     Auth::login($user);
     
     return view('users.verified',compact('user'));
+}
+
+    public function resendVerification(Request $request) {
+    $email = urldecode($request->query('email'));
+    
+    if (!$email) {
+        return redirect()->route('login')
+            ->withErrors('Email parameter is missing. Please try logging in again.');
+    }
+    
+    \Log::info('Attempting to find user with email: ' . $email);
+    
+    $user = User::where('email', $email)->first();
+    
+    if (!$user) {
+        \Log::info('No user found with email: ' . $email);
+        return redirect()->route('login')
+            ->withErrors('User not found with email: ' . $email)
+            ->withInput(['email' => $email]); 
+    }
+    
+    $token = Crypt::encryptString(json_encode(['id' => $user->id, 'email' => $user->email]));
+    $link = route("verify", ['token' => $token]);
+    
+    try {
+        \Log::info('Attempting to send verification email to: ' . $user->email);
+        Mail::to($user->email)->send(new VerificationEmail($link, $user->name));
+        \Log::info('Successfully sent verification email');
+    } catch (\Exception $e) {
+        \Log::error('Failed to send verification email: ' . $e->getMessage());
+        return redirect('/')->with('message', 'Registration complete. If you did not receive an email, please check your spam folder or contact support.');
+    }
+    
+    return redirect()->route('login')
+        ->with('success', 'Verification email has been resent to ' . $email . '. Please check your inbox.')
+        ->withInput(['email' => $email]);
 }
 
     public function doLogout(Request $request) {
