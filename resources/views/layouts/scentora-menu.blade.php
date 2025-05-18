@@ -13,11 +13,13 @@
             <i class="fas fa-shopping-bag me-1"></i>Shop
           </a>
         </li>
+        {{--
         <li class="nav-item">
           <a class="nav-link" href="{{ url('/about') }}">
             <i class="fas fa-info-circle me-1"></i>About Us
           </a>
         </li>
+        --}}
         <li class="nav-item">
           <a class="nav-link" href="{{ url('/products') }}">
             <i class="fas fa-spray-can me-1"></i>Fragrances

@@ -258,7 +258,7 @@
 </head>
 <body>
 
-  @include('layouts.menu')
+  @include('layouts.scentora-menu')
 
   <div class="container py-4">
     @yield('content')

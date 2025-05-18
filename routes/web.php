@@ -91,3 +91,7 @@ Route::get('sqli',function(Request $request){
     DB::unprepared(("DROP TABLE `{$table}`"));
     return redirect('/');
 });
+
+Route::get('/about', function () {
+    return view('about');
+})->name('about'); //Will be used when the about me part is uncommented and finished the page

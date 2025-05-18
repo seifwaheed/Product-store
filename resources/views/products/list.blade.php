@@ -27,8 +27,8 @@
 @section('content')
 <div class="container py-4">
     <div class="row align-items-center mb-3">
-        <div class="col-md-10">
-            <h1 >🛍️ Products</h1>
+        <div class="col-md-8">
+            <h1>🛍️ Products</h1>
         </div>
         <div class="col-md-2">
             @can('add_products')
@@ -37,6 +37,13 @@
             </a>
             @endcan
         </div>
+        {{-- <div class="col-md-2">
+            @role('Admin')
+            <a href="{{ route('users') }}" class="btn btn-gold w-100">
+                <i class="fas fa-users"></i> Users
+            </a>
+            @endrole
+        </div> --}}
     </div>
 
     <form class="mb-4 p-3 rounded shadow-sm bg-light">
