@@ -238,13 +238,18 @@ class UsersController extends Controller {
         return redirect(route('profile', ['user'=>$user->id]));
     }
 
-    public function delete(Request $request, User $user) {
+    public function delete(User $user)
+    {
+        if(!Auth::user() || !Auth::user()->hasRole('Admin')) {
+            abort(401, 'Unauthorized action.');
+        }
 
-        if(!auth()->user()->hasPermissionTo('delete_users')) abort(401);
-
-        //$user->delete();
-
-        return redirect()->route('users');
+        try {
+            $user->delete();
+            return redirect()->route('users')->with('success', 'User deleted successfully');
+        } catch (\Exception $e) {
+            return redirect()->route('users')->with('error', 'Failed to delete user');
+        }
     }
 
     public function editPassword(Request $request, User $user = null) {
