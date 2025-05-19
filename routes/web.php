@@ -15,7 +15,7 @@ Route::get('users', [UsersController::class, 'list'])->name('users');
 Route::get('profile/{user?}', [UsersController::class, 'profile'])->name('profile');
 Route::get('users/edit/{user?}', [UsersController::class, 'edit'])->name('users_edit');
 Route::post('users/save/{user}', [UsersController::class, 'save'])->name('users_save');
-Route::get('users/delete/{user}', [UsersController::class, 'delete'])->name('users_delete');
+Route::delete('/users/{user}', [UsersController::class, 'delete'])->name('users_delete');
 Route::get('users/edit_password/{user?}', [UsersController::class, 'editPassword'])->name('edit_password');
 Route::post('users/save_password/{user}', [UsersController::class, 'savePassword'])->name('save_password');
 Route::post('users/unblockUser/{user}', [UsersController::class,'unblockUser'])->name('unblockUser');
@@ -28,7 +28,7 @@ Route::get('verify', [UsersController::class, 'verify'])->name('verify');
 Route::get('products', [ProductsController::class, 'list'])->name('products_list');
 Route::get('products/edit/{product?}', [ProductsController::class, 'edit'])->name('products_edit');
 Route::post('products/save/{product?}', [ProductsController::class, 'save'])->name('products_save');
-Route::get('products/delete/{product}', [ProductsController::class, 'delete'])->name('products_delete');
+Route::delete('/products/{product}', [ProductsController::class, 'delete'])->name('products_delete');
 // Route::delete('/basket/remove/{product}', [productsController::class, 'removeFromBasket'])->name('basket.remove');
 // Route::delete('/basket/remove/{productId}', [productsController::class, 'removeFromBasket'])->name('basket.remove');
 

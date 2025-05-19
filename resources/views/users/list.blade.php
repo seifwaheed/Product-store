@@ -50,9 +50,13 @@
                             </a>
                             @endcan
                             @can('delete_users')
-                            <a href="{{ route('users_delete', $user->id) }}" class="btn btn-gold btn-sm" onclick="return confirm('Are you sure?')">
-                                <i class="fas fa-trash"></i> Delete
-                            </a>
+                            <form action="{{ route('users_delete', $user->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-gold btn-sm" onclick="return confirm('Are you sure you want to delete this user?')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </form>
                             @endcan
                         </div>
                     </td>
