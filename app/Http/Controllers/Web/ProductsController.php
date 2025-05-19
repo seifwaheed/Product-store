@@ -69,14 +69,18 @@ class ProductsController extends Controller {
 		return redirect()->route('products_list');
 	}
 
-	public function delete(Request $request, Product $product) {
+	public function delete(Request $request, Product $product)
+	{
+		if(!Auth::user() || !Auth::user()->hasRole('Admin')) {
+			abort(401, 'Unauthorized action.');
+		}
 
-		// Simple authorization check - only admins can delete products
-		if(!Auth::user() || Auth::user()->email !== 'admin@example.com') abort(401);
-
-		$product->delete();
-
-		return redirect()->route('products_list');
+		try {
+			$product->delete();
+			return redirect()->route('products_list')->with('success', 'Product deleted successfully');
+		} catch (\Exception $e) {
+			return redirect()->route('products_list')->with('error', 'Failed to delete product');
+		}
 	}
 
 
@@ -92,7 +96,6 @@ class ProductsController extends Controller {
 {
     $user = Auth::user();
 
-    // Check if the user is logged in and has enough credit
     if (!$user) {
         return redirect()->route('login')->with('warning', 'You need to be logged in.');
     }
@@ -101,16 +104,13 @@ class ProductsController extends Controller {
         return redirect()->back()->with('warning', '⚠️ Not enough credit.');
     }
 
-    // Check if the product is in stock
     if ($product->available_stock <= 0) {
         return redirect()->back()->with('warning', '⚠️ Product out of stock.');
     }
 
-    // Deduct credit and decrease product stock using DB::update
     DB::table('users')->where('id', $user->id)->decrement('credit', $product->price);
     DB::table('products')->where('id', $product->id)->decrement('available_stock', 1);
 
-    // Retrieve or create basket, then add product
 	$user = Auth::user();
 
 	$basket = Basket::firstOrCreate([
@@ -143,7 +143,6 @@ public function purchase(Product $product)
 {
     $user = Auth::user();
 
-    // Check if the user is logged in and has enough credit
     if (!$user) {
         return redirect()->route('login')->with('warning', 'You need to be logged in.');
     }
@@ -152,16 +151,13 @@ public function purchase(Product $product)
         return redirect()->back()->with('warning', '⚠️ Not enough credit.');
     }
 
-    // Check if the product is in stock
     if ($product->available_stock <= 0) {
         return redirect()->back()->with('warning', '⚠️ Product out of stock.');
     }
 
-    // Deduct credit and decrease product stock using DB::update
     DB::table('users')->where('id', $user->id)->decrement('credit', $product->price);
     DB::table('products')->where('id', $product->id)->decrement('available_stock', 1);
 
-    // Retrieve or create basket, then add product
 	$user = Auth::user();
 
 	$basket = Basket::firstOrCreate([

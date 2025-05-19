@@ -263,10 +263,10 @@
   <div class="container py-4">
     @yield('content')
   </div>
-
+<!-- 
   <footer>
     <small>🌿 Askarr Store &copy; {{ date('Y') }} — Built with me</small>
-  </footer>
+  </footer> -->
 
   <!-- AOS Animation Library -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>

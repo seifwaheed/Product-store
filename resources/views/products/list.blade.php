@@ -25,142 +25,130 @@
 @extends('layouts.master')
 @section('title', 'Products')
 @section('content')
-<div class="container py-4">
-    <div class="row align-items-center mb-3">
+<div class="container py-5">
+    <!-- Header Section -->
+    <div class="row align-items-center mb-4">
         <div class="col-md-8">
-            <h1>🛍️ Products</h1>
+            <h1 class="display-4 mb-0">🛍️ Products</h1>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-4 text-end">
             @can('add_products')
-            <a href="{{ route('products_edit') }}" class="btn btn-success w-100">
+            <a href="{{ route('products_edit') }}" class="btn btn-success">
                 <i class="fas fa-plus-circle"></i> Add Product
             </a>
             @endcan
         </div>
-        {{-- <div class="col-md-2">
-            @role('Admin')
-            <a href="{{ route('users') }}" class="btn btn-gold w-100">
-                <i class="fas fa-users"></i> Users
-            </a>
-            @endrole
-        </div> --}}
     </div>
 
-    <form class="mb-4 p-3 rounded shadow-sm bg-light">
-        <div class="row g-2">
-            <div class="col-sm-2">
-            <input name="keywords" type="text" class="form-control" placeholder="Search Keywords" value="{{ request()->keywords }} 
-                                                                                                                                      <span> {{!! request()->keywords!!}}</span> " />
-            </div>
-            <div class="col-sm-2">
-                <input name="min_price" type="number" class="form-control" placeholder="Min Price" value="{{ request()->min_price }}" />
-            </div>
-            <div class="col-sm-2">
-                <input name="max_price" type="number" class="form-control" placeholder="Max Price" value="{{ request()->max_price }}" />
-            </div>
-            <div class="col-sm-2">
-                <select name="order_by" class="form-select">s
-            </div>
-            <div class="col-sm-1">
-                <a href="{{ route('products_list') }}" class="btn btn-outline-danger w-100">
-                    <i class="fas fa-undo"></i> Reset
-                </a>
-            </div>
-        </div>
-    </form>
-
-    @foreach($products as $product)
-    <div class="card shadow-sm mb-4 border-0 rounded-lg product-card" data-aos="fade-up">
+    <!-- Search and Filter Section -->
+    <div class="card mb-4 border-0 shadow-sm">
         <div class="card-body">
-            <div class="row">
-                <div class="col-lg-4 mb-3 mb-lg-0">
-                    <img src="{{ asset('images/' . $product->photo) }}" class="img-fluid rounded shadow-sm product-img" alt="{{ $product->name }}">
+            <form class="row g-3">
+                <div class="col-md-3">
+                    <input name="keywords" type="text" class="form-control" placeholder="Search Keywords" value="{{ request()->keywords }}">
                 </div>
-                <div class="col-lg-8 product-details-box">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="product-title">{{ $product->name }}</h3>
-        <div class="d-flex gap-2">
-            @can('edit_products')
-            <a href="{{ route('products_edit', $product->id) }}" class="btn btn-outline-light btn-sm">
-                <i class="fas fa-edit"></i> Edit
-            </a>
-            @endcan
-            @can('delete_products')
-            <a href="{{ route('products_delete', $product->id) }}" class="btn btn-outline-danger btn-sm">
-                <i class="fas fa-trash-alt"></i> Delete
-            </a>
-            @endcan
+                <div class="col-md-2">
+                    <input name="min_price" type="number" class="form-control" placeholder="Min Price" value="{{ request()->min_price }}">
+                </div>
+                <div class="col-md-2">
+                    <input name="max_price" type="number" class="form-control" placeholder="Max Price" value="{{ request()->max_price }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="order_by" class="form-select">
+                        <option value="">Sort By</option>
+                        <option value="price">Price</option>
+                        <option value="name">Name</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <a href="{{ route('products_list') }}" class="btn btn-outline-danger w-100">
+                        <i class="fas fa-undo"></i> Reset
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
 
-    <table class="table table-sm table-borderless text-light">
-        <tr><th>Name</th><td>{{ $product->name }}</td></tr>
-        <tr><th>Model</th><td>{{ $product->model }}</td></tr>
-        <tr><th>Code</th><td>{{ $product->code }}</td></tr>
-        <tr><th>Price</th><td>${{ $product->price }}</td></tr>
-        <tr><th>Description</th><td>{{ $product->description }}</td></tr>
-        <tr><th>Stock</th><td>{{ $product->available_stock }}</td></tr>
-
-                        <!-- <form action="{{ route('products.addstock', $product->id) }}" method="POST"> -->
-                        @csrf
-                        <div class="col-6">
-                <!-- <label for="price" class="form-label">add:</label>
-                <input type="number" class="form-control" placeholder="Product Price" name="price" required value="{{$product->stock}}">
-            </div> -->
-
-                   @role('Employee')            
-            <form action="{{ route('products.addstock', $product->id) }}" method="POST">
-            @csrf
-                    <div class="input-group">
-                        <input type="number" class="form-control" name="stock" placeholder="Enter Stock  Amount" >
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-plus"></i> Add stock
-                        </button>
+    <!-- Products Grid -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach($products as $product)
+        <div class="col">
+            <div class="card h-100 product-card">
+                <div class="position-relative">
+                    <img src="{{ asset('images/' . $product->photo) }}" class="card-img-top product-img" alt="{{ $product->name }}">
+                    @if($product->available_stock <= 0)
+                    <div class="position-absolute top-0 end-0 m-2">
+                        <span class="badge bg-danger">Out of Stock</span>
                     </div>
-                </form>
+                    @endif
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title product-title">{{ $product->name }}</h5>
+                    <div class="product-details">
+                        <p class="card-text mb-2 text-white"><strong>Model:</strong> {{ $product->model }}</p>
+                        <p class="card-text mb-2 text-white"><strong>Code:</strong> {{ $product->code }}</p>
+                        <p class="card-text mb-2 text-white"><strong>Price:</strong> ${{ $product->price }}</p>
+                        <p class="card-text mb-3 text-white"><strong>Stock:</strong> {{ $product->available_stock }}</p>
+                        <p class="card-text description">{{ $product->description }}</p>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        @if($product->available_stock > 0)
+                        <form action="{{ route('products.addTobasket', $product->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-shopping-cart"></i> Buy
+                            </button>
+                        </form>
+                        @else
+                        <button class="btn btn-secondary" disabled>Out of Stock</button>
+                        @endif
 
-                
-               @endrole
-            
-           
-                        
+                        <div class="btn-group">
+                            @can('edit_products')
+                            <a href="{{ route('products_edit', $product->id) }}" class="btn btn-outline-light">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            @endcan
+                            @can('delete_products')
+                            <form action="{{ route('products_delete', $product->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Are you sure you want to delete this product?')">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                            @endcan
+                        </div>
+                    </div>
 
-                    </table>
-
-                    @if($product->available_stock > 0)
-                    <form action="{{ route('products.addTobasket', $product->id) }}" method="POST">
+                    @role('Employee')
+                    <form action="{{ route('products.addstock', $product->id) }}" method="POST" class="mt-3">
                         @csrf
-                        <button type="submit" class="btn btn-success">
-                            Buy
-                        </button>
+                        <div class="input-group">
+                            <input type="number" class="form-control" name="stock" placeholder="Add stock">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
                     </form>
-                    @else
-                    <button class="btn btn-secondary" disabled>Out of Stock</button>
-                    @endif
-
-                    @if(session('warning'))
-                    <div class="alert alert-warning mt-3">{{ session('warning') }}</div>
-                    @endif
-
-                    @if(session('success'))
-                    <div class="alert alert-success mt-3">{{ session('success') }}</div>
-                    @endif
+                    @endrole
                 </div>
             </div>
         </div>
+        @endforeach
     </div>
-    @endforeach
 </div>
 
 <style>
     :root {
-        --primary-color: #f5f5f5; /* Light Text */
-        --secondary-color: #c6a47e; /* Gold Accent */
-        --card-bg: #3a2828; /* Darker than body */
-        --light-bg: #2c1e1e; /* Page Background */
-        --danger-color: #a94442; /* Soft Red */
-        --text-color: #f5f5f5; /* Text Everywhere */
-        --dark-bg: #1c1212; /* Table Headers */
+        --primary-color: #f5f5f5;
+        --secondary-color: #c6a47e;
+        --card-bg: #3a2828;
+        --light-bg: #2c1e1e;
+        --danger-color: #a94442;
+        --text-color: #f5f5f5;
+        --dark-bg: #1c1212;
     }
 
     body {
@@ -169,47 +157,62 @@
         color: var(--text-color);
     }
 
-    h1, h3 {
-        color: var(--secondary-color);
-    }
-
     .product-card {
-        border-radius: 12px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
         background-color: var(--card-bg);
+        border: none;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .product-card:hover {
-        transform: scale(1.03);
-        box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.5);
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     }
 
     .product-img {
-        border-radius: 10px;
-        object-fit: cover;
-        height: 100%;
-        transition: transform 0.3s ease;
+        width: 100%;
+        height: 300px;
+        object-fit: contain;
+        background-color: var(--dark-bg);
+        padding: 10px;
+        border-radius: 8px 8px 0 0;
     }
 
-    .product-img:hover {
-        transform: scale(1.05);
+    .position-relative {
+        background-color: var(--dark-bg);
+        border-radius: 8px 8px 0 0;
     }
 
-    .btn-outline-success, .btn-outline-danger, .btn-success {
-        border-radius: 25px;
-        padding: 10px 20px;
-        font-size: 14px;
-        transition: all 0.4s ease;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    .product-title {
+        color: var(--secondary-color);
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .product-details {
+        font-size: 0.9rem;
+    }
+
+    .description {
+        font-size: 0.85rem;
+        color: #d1d1d1;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .form-control, .form-select {
+        background-color: var(--dark-bg);
+        border: 1px solid var(--secondary-color);
         color: var(--text-color);
-        border: 2px solid var(--secondary-color);
     }
 
-    .btn-outline-success:hover, .btn-outline-danger:hover, .btn-success:hover {
-        background-color: var(--secondary-color);
-        color: #2c1e1e;
-        transform: scale(1.05);
+    .form-control:focus, .form-select:focus {
+        background-color: var(--dark-bg);
+        border-color: var(--secondary-color);
+        color: var(--text-color);
+        box-shadow: 0 0 0 0.25rem rgba(198, 164, 126, 0.25);
     }
 
     .btn-success {
@@ -217,80 +220,29 @@
         border: none;
     }
 
-    .btn-outline-danger:hover {
-        background-color: var(--danger-color);
-        color: #fff;
+    .btn-outline-light {
+        border-color: var(--secondary-color);
+        color: var(--secondary-color);
     }
 
-    .bg-light {
-        background-color: var(--card-bg) !important;
+    .btn-outline-light:hover {
+        background-color: var(--secondary-color);
+        color: var(--dark-bg);
     }
 
-    .table {
-        color: var(--text-color);
+    .badge {
+        font-size: 0.8rem;
+        padding: 0.5em 1em;
     }
 
-    .table th {
-        background-color: var(--dark-bg);
-        color: var(--text-color);
+    .input-group .form-control {
+        border-right: none;
     }
 
-    .table td {
-        background-color: var(--card-bg);
+    .input-group .btn {
+        border-left: none;
     }
-
-    input.form-control, select.form-select {
-        background-color: var(--card-bg);
-        color: var(--text-color);
-        border: 1px solid var(--secondary-color);
-    }
-
-    input.form-control::placeholder {
-        color: #d6c6c6;
-    }
-
-
-
-    .product-details-box {
-    background-color: #3e2c2c;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    color: #f5f5f5;
-    transition: background-color 0.3s ease;
-}
-
-.product-details-box:hover {
-    background-color:rgb(51, 36, 36);
-}
-
-.product-title {
-    color: #fdd9a0;
-    font-weight: 600;
-}
-
-.table th {
-    width: 30%;
-    color:rgb(101, 76, 76);
-}
-
-.table td {
-    color: #ffffff;
-}
-
-.btn-outline-light {
-    border-color: #cccccc;
-    color: #cccccc;
-}
-
-.btn-outline-light:hover {
-    background-color:rgba(197, 48, 48, 0.06);
-    color: #ffffff;
-}
-
 </style>
-
-
 @endsection
 </body>
 </html>
